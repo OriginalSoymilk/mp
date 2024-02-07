@@ -7,7 +7,7 @@ import pickle
 app = Flask(__name__)
 
 # 下载模型文件
-github_url = 'https://raw.githubusercontent.com/your_username/your_repository/main/pushup.pkl'
+github_url = 'https://raw.githubusercontent.com/OriginalSoymilk/mp/main/pushup.pkl'
 response = requests.get(github_url)
 with open('pushup.pkl', 'wb') as f:
     f.write(response.content)
