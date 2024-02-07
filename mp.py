@@ -13,7 +13,7 @@ gauth.LocalWebserverAuth()  # 使用本地 Web 服务器进行身份验证
 drive = GoogleDrive(gauth)
 
 # 下载模型文件
-file_id = 'https://drive.google.com/file/d/16QIrPY3FNjri4tZZeH18cM0YIt1kMusz/view?usp=drive_link'  # 从共享链接中获取
+file_id = '16QIrPY3FNjri4tZZeH18cM0YIt1kMusz'  # 文件 ID
 model_file = drive.CreateFile({'id': file_id})
 model_file.GetContentFile('pushup.pkl')  # 将模型文件下载到本地
 
@@ -30,7 +30,12 @@ def classify_pose():
     # 将坐标转换为特征向量
     rows = []
     for pose in poses:
-        row = [landmark['x'], landmark['y'], landmark['z'], landmark['visibility']] for landmark in pose
+        row = []
+        for landmark in pose:
+            row.append(landmark['x'])
+            row.append(landmark['y'])
+            row.append(landmark['z'])
+            row.append(landmark['visibility'])
         rows.append(row)
     X = pd.DataFrame(rows, columns=['x', 'y', 'z', 'visibility'])
 
