@@ -1,21 +1,16 @@
 from flask import Flask, request, jsonify
 import pandas as pd
 import numpy as np
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+import requests
 import pickle
 
 app = Flask(__name__)
 
-# 使用 Google Drive API 进行身份验证
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth()  # 使用本地 Web 服务器进行身份验证
-drive = GoogleDrive(gauth)
-
 # 下载模型文件
-file_id = '16QIrPY3FNjri4tZZeH18cM0YIt1kMusz'  # 文件 ID
-model_file = drive.CreateFile({'id': file_id})
-model_file.GetContentFile('pushup.pkl')  # 将模型文件下载到本地
+github_url = 'https://raw.githubusercontent.com/your_username/your_repository/main/pushup.pkl'
+response = requests.get(github_url)
+with open('pushup.pkl', 'wb') as f:
+    f.write(response.content)
 
 # 加载模型
 with open('pushup.pkl', 'rb') as model_file:
