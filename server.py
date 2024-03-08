@@ -64,8 +64,8 @@ class PoseLandmarkType:
 def predict():
     # 从 POST 请求中获取 JSON 数据
     data = request.json
-    
-    raw_string = json.dumps(data)
+    poses = data['jsonPoses']
+    raw_string = json.dumps(poses)
 
     # 使用正则表达式进行匹配和替换
     pattern = r'(?<=[ {,])(x|y|z|v): (?=-?\d)'
