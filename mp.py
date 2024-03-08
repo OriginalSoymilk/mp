@@ -20,7 +20,7 @@ with open('pushup.pkl', 'rb') as model_file:
 def classify_pose():
     # 接收 POST 请求中的 JSON 数据
     data = request.get_json()
-    poses = data['poses']
+    poses = data['jsonPoses']
     
     # 将坐标转换为特征向量
     rows = []
