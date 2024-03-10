@@ -103,7 +103,7 @@ def predict():
             z = values["z"]
             visibility = values["visibility"]
             rows.append([x, y, z, visibility])
-
+    print('here?')
     # 将数据转换为 numpy 数组，并展开为一维列表
     row = np.array(rows).flatten().tolist()
     X=pd.DataFrame([row], columns=landmarks[1:])
