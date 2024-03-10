@@ -66,7 +66,6 @@ def predict():
     data = request.json
     poses = data['jsonPoses']
     raw_string = json.dumps(poses)
-    print(raw_string)
     # 使用正则表达式进行匹配和替换
     pattern = r'(?<=[ {,])(x|y|z|v): (?=-?\d)'
     formatted_string = re.sub(pattern, r'"\1": ', raw_string)
