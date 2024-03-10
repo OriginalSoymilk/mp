@@ -112,7 +112,7 @@ def predict():
     
     # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
     body_language_prob_serializable = body_language_prob.tolist()
-    
+    print(body_language_class, body_language_prob_serializable)
     # 返回预测结果
     return jsonify({'body_language_class': body_language_class, 'body_language_prob': body_language_prob_serializable})
 
