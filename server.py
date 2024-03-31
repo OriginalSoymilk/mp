@@ -62,60 +62,57 @@ class PoseLandmarkType:
 # 处理 JSON 数据并预测结果
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        # 从 POST 请求中获取 JSON 数据
-        data = request.json
-        poses = data['jsonPoses']
-        raw_string = json.dumps(poses)
-        # 使用正则表达式进行匹配和替换
-        pattern = r'(?<=[ {,])(x|y|z|v): (?=-?\d)'
-        formatted_string = re.sub(pattern, r'"\1": ', raw_string)
+    # 从 POST 请求中获取 JSON 数据
+    data = request.json
+    poses = data['jsonPoses']
+    raw_string = json.dumps(poses)
+    # 使用正则表达式进行匹配和替换
+    pattern = r'(?<=[ {,])(x|y|z|v): (?=-?\d)'
+    formatted_string = re.sub(pattern, r'"\1": ', raw_string)
+
+    # 将字典的键名修正为字符串形式
+    formatted_string = re.sub(r'([A-Za-z_][A-Za-z_0-9.]*)(?=:)', r'"\1"', formatted_string)
+
+    # 将字符串解析为字典列表
+    poses = json.loads(formatted_string)
+
+    # 将 poses 转换为标准格式
+    formatted_poses = []
+
+    for pose in poses:
+        formatted_pose = {}
+        for landmark, data in pose.items():
+            formatted_pose[str(landmark)] = {
+                "x": data['x'],
+                "y": data['y'],
+                "z": data['z'],
+                "visibility": data['v']
+            }
+        formatted_poses.append(formatted_pose)
+
+    # 将 formatted_poses 转换为 JSON 格式
+    json_data = json.dumps(formatted_poses, indent=4)
+
+    # 提取 x、y、z、visibility 的值
+    rows = []
+    for pose in formatted_poses:
+        for landmark, values in pose.items():
+            x = values["x"]
+            y = values["y"]
+            z = values["z"]
+            visibility = values["visibility"]
+            rows.append([x, y, z, visibility])
     
-        # 将字典的键名修正为字符串形式
-        formatted_string = re.sub(r'([A-Za-z_][A-Za-z_0-9.]*)(?=:)', r'"\1"', formatted_string)
+    # 将数据转换为 numpy 数组，并展开为一维列表
+    row = np.array(rows).flatten().tolist()
+    X = pd.DataFrame([row], columns=landmarks[1:])
+    body_language_class = model.predict(X)[0]
+    body_language_prob = model.predict_proba(X)[0]
     
-        # 将字符串解析为字典列表
-        poses = json.loads(formatted_string)
-    
-        # 将 poses 转换为标准格式
-        formatted_poses = []
-    
-        for pose in poses:
-            formatted_pose = {}
-            for landmark, data in pose.items():
-                formatted_pose[str(landmark)] = {
-                    "x": data['x'],
-                    "y": data['y'],
-                    "z": data['z'],
-                    "visibility": data['v']
-                }
-            formatted_poses.append(formatted_pose)
-    
-        # 将 formatted_poses 转换为 JSON 格式
-        json_data = json.dumps(formatted_poses, indent=4)
-    
-        # 提取 x、y、z、visibility 的值
-        rows = []
-        for pose in formatted_poses:
-            for landmark, values in pose.items():
-                x = values["x"]
-                y = values["y"]
-                z = values["z"]
-                visibility = values["visibility"]
-                rows.append([x, y, z, visibility])
-        
-        # 将数据转换为 numpy 数组，并展开为一维列表
-        row = np.array(rows).flatten().tolist()
-        X = pd.DataFrame([row], columns=landmarks[1:])
-        body_language_class = model.predict(X)[0]
-        body_language_prob = model.predict_proba(X)[0]
-        
-        # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
-        body_language_prob_serializable = body_language_prob.tolist()
-        # 返回预测结果
-        return jsonify({'body_language_class': body_language_class, 'body_language_prob': body_language_prob_serializable})
-    except:
-        pass
+    # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
+    body_language_prob_serializable = body_language_prob.tolist()
+    # 返回预测结果
+    return jsonify({'body_language_class': body_language_class, 'body_language_prob': body_language_prob_serializable})
 
 if __name__ == '__main__':
     app.run(debug=True)
