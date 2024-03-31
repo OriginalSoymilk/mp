@@ -61,9 +61,9 @@ class PoseLandmarkType:
 
 # 使用 lru_cache 装饰器来添加缓存功能
 @lru_cache(maxsize=128)  # 指定缓存大小为 128 条记录
-def predict_cached(X):
-    body_language_class = model.predict(X)[0]
-    body_language_prob = model.predict_proba(X)[0]
+def predict_cached(X_values):
+    body_language_class = model.predict(X_values)[0]
+    body_language_prob = model.predict_proba(X_values)[0]
     body_language_prob_serializable = body_language_prob.tolist()
     return body_language_class, body_language_prob_serializable
 
@@ -113,10 +113,10 @@ def predict():
     
     # 将数据转换为 numpy 数组，并展开为一维列表
     row = np.array(rows).flatten().tolist()
-    X = pd.DataFrame([row], columns=landmarks[1:])
+    X_values = pd.DataFrame([row], columns=landmarks[1:]).values
     
     # 调用缓存函数进行预测
-    body_language_class, body_language_prob_serializable = predict_cached(X)
+    body_language_class, body_language_prob_serializable = predict_cached(tuple(X_values[0]))
     
     # 返回预测结果
     return jsonify({'body_language_class': body_language_class, 'body_language_prob': body_language_prob_serializable})
