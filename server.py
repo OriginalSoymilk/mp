@@ -108,7 +108,7 @@ def predict():
     X = pd.DataFrame([row], columns=landmarks[1:])
     body_language_class = model.predict(X)[0]
     body_language_prob = model.predict_proba(X)[0]
-    
+    print(row)
     # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
     body_language_prob_serializable = body_language_prob.tolist()
     # 返回预测结果
