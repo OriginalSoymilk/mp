@@ -1,25 +1,25 @@
+# app/server.py
+
 from flask import Flask, jsonify, request
 import pickle
 import re
 import json
 import numpy as np
 import pandas as pd
-from functools import lru_cache  # 导入 lru_cache 函数
 
 app = Flask(__name__)
 
 # 定义姿势的关键点
-landmarks = ['class']
+landmarks=['class']
 for val in range(1, 33+1):
-    landmarks += ['x{}'.format(val), 'y{}'.format(val),
-                  'z{}'.format(val), 'v{}'.format(val)]
+    landmarks+=['x{}'.format(val), 'y{}'.format(val), 'z{}'.format(val), 'v{}'.format(val)]
 
 # 从 Google Drive 下载模型
 # 请确保你已经按照之前的说明将 export_file_url 替换为正确的链接
 export_file_url = 'https://www.googleapis.com/drive/v3/files/1WHjUiV1kFC_GF-9g-7_v1RALH0N8-tAg?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
 # 使用你的下载模型的代码
 print("Loading model...")
-with open('pushup.pkl', 'rb') as f:
+with open('pushup.pkl','rb') as f:
     model = pickle.load(f)
 print("Model loaded successfully.")
 
@@ -58,14 +58,6 @@ class PoseLandmarkType:
     leftFootIndex = "leftFootIndex"
     rightFootIndex = "rightFootIndex"
     pass  # 这里省略了关键点类型的定义，请根据你的实际需要进行定义
-
-# 使用 lru_cache 装饰器来添加缓存功能
-@lru_cache(maxsize=128)  # 指定缓存大小为 128 条记录
-def predict_cached(X_values):
-    body_language_class = model.predict(X_values)[0]
-    body_language_prob = model.predict_proba(X_values)[0]
-    body_language_prob_serializable = body_language_prob.tolist()
-    return body_language_class, body_language_prob_serializable
 
 # 处理 JSON 数据并预测结果
 @app.route('/predict', methods=['POST'])
@@ -113,11 +105,12 @@ def predict():
     
     # 将数据转换为 numpy 数组，并展开为一维列表
     row = np.array(rows).flatten().tolist()
-    X_values = pd.DataFrame([row], columns=landmarks[1:]).values
+    X = pd.DataFrame([row], columns=landmarks[1:])
+    body_language_class = model.predict(X)[0]
+    body_language_prob = model.predict_proba(X)[0]
     
-    # 调用缓存函数进行预测
-    body_language_class, body_language_prob_serializable = predict_cached(tuple(X_values[0]))
-    
+    # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
+    body_language_prob_serializable = body_language_prob.tolist()
     # 返回预测结果
     return jsonify({'body_language_class': body_language_class, 'body_language_prob': body_language_prob_serializable})
 
