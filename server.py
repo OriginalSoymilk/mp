@@ -12,11 +12,11 @@ app = Flask(__name__)
 # 定义姿势的关键点
 landmarks=['class']
 for val in range(1, 33+1):
-    landmarks+=['x{}'.format(val), 'y{}'.format(val), 'z{}'.format(val), 'v{}'.format(val)]
+    landmarks+=['x{}'.format(val), 'y{}'.format(val), 'v{}'.format(val)]
 
 # 从 Google Drive 下载模型
 # 请确保你已经按照之前的说明将 export_file_url 替换为正确的链接
-export_file_url = 'https://www.googleapis.com/drive/v3/files/1TdFxjipt4Qj9Nx_f1Bmcl3yfIgOMXTTN?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
+export_file_url = 'https://www.googleapis.com/drive/v3/files/1MP7dMzFD9oYY8II9DfKLbQCZoVAMRfNk?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
 # 使用你的下载模型的代码
 print("Loading model...")
 with open('pushup.pkl','rb') as f:
@@ -67,7 +67,7 @@ def predict():
     poses = data['jsonPoses']
     raw_string = json.dumps(poses)
     # 使用正则表达式进行匹配和替换
-    pattern = r'(?<=[ {,])(x|y|z|v): (?=-?\d)'
+    pattern = r'(?<=[ {,])(x|y|v): (?=-?\d)'
     formatted_string = re.sub(pattern, r'"\1": ', raw_string)
 
     # 将字典的键名修正为字符串形式
@@ -85,13 +85,12 @@ def predict():
             formatted_pose[str(landmark)] = {
                 "x": data['x'],
                 "y": data['y'],
-                "z": data['z'],
                 "visibility": data['v']
             }
         formatted_poses.append(formatted_pose)
 
     # 将 formatted_poses 转换为 JSON 格式
-    json_data = json.dumps(formatted_poses, indent=4)
+    json_data = json.dumps(formatted_poses, indent=3)
 
     # 提取 x、y、z、visibility 的值
     rows = []
@@ -99,9 +98,8 @@ def predict():
         for landmark, values in pose.items():
             x = values["x"]
             y = values["y"]
-            z = values["z"]
             visibility = values["visibility"]
-            rows.append([x, y, z, visibility])
+            rows.append([x, y, visibility])
     
     # 将数据转换为 numpy 数组，并展开为一维列表
     row = np.array(rows).flatten().tolist()
