@@ -16,7 +16,7 @@ for val in range(1, 33+1):
 
 # 从 Google Drive 下载模型
 # 请确保你已经按照之前的说明将 export_file_url 替换为正确的链接
-export_file_url = 'https://www.googleapis.com/drive/v3/files/1ISjc80o97PCnAkYrqnhcSTtIV9xD-gUi?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
+export_file_url = 'https://www.googleapis.com/drive/v3/files/1cQkIrlqL78_irUktRr4J7DyNz5n4C1Oj?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
 # 使用你的下载模型的代码
 print("Loading model...")
 with open('pushup.pkl','rb') as f:
