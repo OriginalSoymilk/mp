@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 # 定义姿势的关键点
 landmarks=['class']
-for val in range(1, 33+1):
+for val in range(1, 32+1):
     landmarks+=['x{}'.format(val), 'y{}'.format(val), 'v{}'.format(val)]
 
 # 从 Google Drive 下载模型
