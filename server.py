@@ -14,10 +14,7 @@ landmarks=['class']
 for val in range(1, 33+1):
     landmarks+=['x{}'.format(val), 'y{}'.format(val), 'z{}'.format(val), 'v{}'.format(val)]
 
-# 从 Google Drive 下载模型
-# 请确保你已经按照之前的说明将 export_file_url 替换为正确的链接
-export_file_url = 'https://www.googleapis.com/drive/v3/files/1zyuvzLgTr5RpmJ7MYTeN2on6eu9OS9px?alt=media&key=AIzaSyDSBXA3mgRotoB9-lL3xBFcRcBxfFq4aTg'
-# 使用你的下载模型的代码
+# 使用你的模型的代码
 print("Loading model...")
 with open('warrior.pkl','rb') as f:
     model = pickle.load(f)
