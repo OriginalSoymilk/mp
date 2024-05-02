@@ -62,7 +62,7 @@ class PoseLandmarkType:
     pass  # 这里省略了关键点类型的定义，请根据你的实际需要进行定义
 
 # 处理 JSON 数据并预测结果
-@app.route('/predict', methods=['POST'])
+@app.route('/predict/init', methods=['POST'])
 def predict():
     # 从 POST 请求中获取 JSON 数据
     data = request.json
