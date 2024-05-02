@@ -17,8 +17,13 @@ for val in range(1, 33+1):
 # 使用你的模型的代码
 print("Loading model...")
 with open('init.pkl','rb') as f:
-    model = pickle.load(f)
-print("Model loaded successfully.")
+    init = pickle.load(f)
+print("Init Model loaded successfully.")
+
+print("Loading model...")
+with open('warrior.pkl','rb') as f:
+    warrior = pickle.load(f)
+print("Warrior Model loaded successfully.")
 
 class PoseLandmarkType:
     nose = "nose"
@@ -103,8 +108,8 @@ def predict():
     # 将数据转换为 numpy 数组，并展开为一维列表
     row = np.array(rows).flatten().tolist()
     X = pd.DataFrame([row], columns=landmarks[1:])
-    body_language_class = model.predict(X)[0]
-    body_language_prob = model.predict_proba(X)[0]
+    body_language_class = init.predict(X)[0]
+    body_language_prob = init.predict_proba(X)[0]
     # 将结果转换为可序列化的 Python 数据类型，然后进行 JSON 序列化
     body_language_prob_serializable = body_language_prob.tolist()
     # 返回预测结果
