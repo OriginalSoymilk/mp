@@ -16,7 +16,7 @@ for val in range(1, 33+1):
 
 # 使用你的模型的代码
 print("Loading model...")
-with open('warrior.pkl','rb') as f:
+with open('init.pkl','rb') as f:
     model = pickle.load(f)
 print("Model loaded successfully.")
 
